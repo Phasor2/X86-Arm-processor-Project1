@@ -1,0 +1,215 @@
+@Project 1
+@ECE 371
+@ Phong Nguyen October  2017
+@PART 1 ASSEMBLY CODE (ONLY SUBROUTINE)
+
+CONVERSION:
+	LDR R2,=CORRECTION_FACTOR	@Reset the pointer for CORRECTION_FACTOR
+	LDR R4,[R0]				@Load half word into R0 into R4
+	CMP R4,#20				@if R4<=20 N and Z is set 1
+	BLE CORRECTION			@Branch if less or equal
+	ADD R2,R2,#4				@increment pointer 1 R2=1
+	CMP R4,#39				@if R4<=39 N and Z is set 1
+	BLE CORRECTION			@Load half word R0 into R4 (F rough)
+	ADD R2,R2,#4				@increment pointer 1  R2=2
+	CMP R4,#59				@if R4<=59 N and Z is set 1
+	BLE CORRECTION			@Load half word R0 into R4 (F rough)
+	ADD R2,R2,#4				@increment pointer 1  R2=3
+	CMP R4,#79				@if R4<=79 N and Z is set 1
+	BLE CORRECTION			@Load half word R0 into R4 (F rough)
+	ADD R2,R2,#4				@increment pointer 1  R2=4
+	CMP R4,#99				@if R4<=99 N and Z is set 1
+	BLE CORRECTION			@Load half word R0 into R4 (F rough)
+	ADD R2,R2,#4				@increment pointer 1  R2=5
+	CMP R4,#120				@if R4<=120 N and Z is set 1
+	BLE CORRECTION		
+
+
+CORRECTION:
+	MOV R5,#0x0				@clear R5 buffer
+	MOV R6,#0x0				@clear R6 buffer
+	LDR R5,[R1]				@ R5 (F True) get value from R1
+	LDR R6,[R2]				@ R6 (Correction factor)get value from R2
+	ADD R5,R4,R6				@Add the correction into rough value
+	STR R5,[R1]				@store R5 into R1 array
+	ADD R0,R0,#4				@increment R0 pointer
+	ADD R1,R1,#4				@increment R1 pointer
+	SUBS R3,R3,#1				@decrement R3 Counter
+	BNE CONVERSION
+	LDMFD R13!,{R0-R9,R14}		@Pop the stack
+	MOV PC,R14
+
+AVERAGE:
+	LDR R5,[R1]				@Load half word R1 into R5
+	ADD R6,R6,R5				@Adding sum = sum + F true
+	ADD R1,R1,#4				@increment F true pointer
+	SUBS R3,R3,#1				@decrement the counter
+	BNE AVERAGE				@branch if z is not set 1
+	LDR R8,[R7] 				@Load R8 into R7
+	AND R9,R6,#0x000f			@Masking 4 lower bits and store in R9
+	MOV R8,R6,LSR #4			@shift 4 bit position in to the right
+	CMP R9,#0x8				@compare the mask bit 
+	BPL ROUNDED				@IF PL plus positive or z (N clear)
+	NOP
+END:
+	STR R8,[R7]				@store R8 into R7
+	LDMFD R13!,{R0-R9,R14}		@Pop the stack
+	MOV PC,R14
+ROUNDED:
+	ADD R8,R8,#1				@rounded R8
+	B END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@PART 2 ASSEMBLY CODE (COMPLETE PROGRAM)
+
+@Project 1
+@ECE 371
+@ Phong Nguyen October  2017
+
+.text 						@start of the program code section	
+.global _start
+_start:
+
+@R0-R12 general purpose regs
+@R13 is stack pointer (SP)
+@R14 is link register (LR)
+@R15 is used a program counter (PC)
+.equ NUM,16
+	LDR R0,=FAHRENHEIT_ROUGH
+	LDR R1,=FAHRENHEIT_TRUE
+	LDR R2,=CORRECTION_FACTOR
+	MOV R3,#NUM				@set the counter 16	
+	MOV R4,#0x0				@initialize R4 buffer	
+	MOV R5,#0x0				@initialize R5 buffer
+	MOV R6,#0x0				@initialize R6 buffer
+	LDR R7,=ROUNDED_AVERAGE
+	MOV R8,#0x0
+	MOV R9,#0x0
+	LDR R13,=STACK
+	ADD R13,R13,#0x100
+	
+	BL STEP1
+	NOP
+	BL STEP2
+	NOP
+@-----------------------------------------------------------------------------------------------
+@-----------------------------------------------------------------------------------------------
+@-----------------------------------------------------------------------------------------------
+STEP1: STMFD R13!, {R0-R9,R14}
+CONVERSION:
+	LDR R2,=CORRECTION_FACTOR	@Reset the pointer for CORRECTION_FACTOR
+	LDR R4,[R0]				@Load half word into R0 into R4
+	CMP R4,#20				@if R4<=20 N and Z is set 1
+	BLE CORRECTION			@Branch if less or equal
+	ADD R2,R2,#4				@increment pointer 1 R2=1
+	CMP R4,#39				@if R4<=39 N and Z is set 1
+	BLE CORRECTION			@Load half word R0 into R4 (F rough)
+	ADD R2,R2,#4				@increment pointer 1  R2=2
+	CMP R4,#59				@if R4<=59 N and Z is set 1
+	BLE CORRECTION			@Load half word R0 into R4 (F rough)
+	ADD R2,R2,#4				@increment pointer 1  R2=3
+	CMP R4,#79				@if R4<=79 N and Z is set 1
+	BLE CORRECTION			@Load half word R0 into R4 (F rough)
+	ADD R2,R2,#4				@increment pointer 1  R2=4
+	CMP R4,#99				@if R4<=99 N and Z is set 1
+	BLE CORRECTION			@Load half word R0 into R4 (F rough)
+	ADD R2,R2,#4				@increment pointer 1  R2=5
+	CMP R4,#120				@if R4<=120 N and Z is set 1
+	BLE CORRECTION		
+
+
+
+CORRECTION:
+	MOV R5,#0x0				@clear R5 buffer
+	MOV R6,#0x0				@clear R6 buffer
+	LDR R5,[R1]				@ R5 (F True) get value from R1
+	LDR R6,[R2]				@ R6 (Correction factor)get value from R2
+	ADD R5,R4,R6				@Add the correction into rough value
+	STR R5,[R1]				@store R5 into R1 array
+	ADD R0,R0,#4				@increment R0 pointer
+	ADD R1,R1,#4				@increment R1 pointer
+	SUBS R3,R3,#1				@decrement R3 Counter
+	BNE CONVERSION
+	LDMFD R13!,{R0-R9,R14}		@Pop the stack
+	MOV PC,R14
+@-----------------------------------------------------------------------------------------------
+@-----------------------------------------------------------------------------------------------
+@-----------------------------------------------------------------------------------------------
+STEP2: STMFD R13!, {R0-R9,R14}
+AVERAGE:
+	LDR R5,[R1]				@Load half word R1 into R5
+	ADD R6,R6,R5				@Adding sum = sum + F true
+	ADD R1,R1,#4				@increment F true pointer
+	SUBS R3,R3,#1				@decrement the counter
+	BNE AVERAGE				@branch if z is not set 1
+	LDR R8,[R7] 				@Load R8 into R7
+	AND R9,R6,#0x000f			@Masking 4 lower bits and store in R9
+	MOV R8,R6,LSR #4			@shift 4 bit position in to the right
+	CMP R9,#0x8				@compare the mask bit 
+	BPL ROUNDED				@IF PL plus positive or z (N clear)
+	NOP
+END:
+	STR R8,[R7]				@store R8 into R7
+	LDMFD R13!,{R0-R9,R14}		@Pop the stack
+	MOV PC,R14
+ROUNDED:
+	ADD R8,R8,#1				@rounded R8
+	B END
+	
+.data
+FAHRENHEIT_ROUGH: .word 0x36,0x37,0x42,0x4D,0X58,0X63,0X4E,0X3F,0X52,0X18,0X3F,0X4A,0X54,0X36,0X5E,0X50
+FAHRENHEIT_TRUE: .word 0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0
+CORRECTION_FACTOR: .word 0x0,0x1,0x3,0x7,0xc,0x14 
+ROUNDED_AVERAGE: .word 0x0
+STACK: 	.rept 256
+		.byte 0x00
+		.endr
+.end
+		
+
+
