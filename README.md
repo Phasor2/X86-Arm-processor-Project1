@@ -1,6 +1,7 @@
 # Assembly-langguge-X86-Arm-processor-ECE371--Project2
 
 ## Full report open "Project1.docx"
+## Assembly code open "x86 assblembly project 1.txt"
 First, I have to recognize input and output of the project. Here is are simplify the project into black box 
 ![alt text](https://github.com/Phasor2/Assembly-langguge-X86-Arm-processor-ECE371--Project1/blob/master/project1%20black%20box.png)
 Clearly, I can see there are 2 outputs. It’s my goal to design the system calculates the output that I want. In order to obtain these outputs, I must need 2 sub routines. They are Conversion and Average. 
