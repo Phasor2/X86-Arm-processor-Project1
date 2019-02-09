@@ -1,4 +1,4 @@
-# Assembly-langguge-X86-Arm-processor-ECE371--Project2
+# Assembly-langguge-X86-Arm-processor-ECE371--Project1
 
 ## Full report open "Project1.docx"
 ## Assembly code open "x86 assblembly project 1.txt"
