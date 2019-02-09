@@ -11,7 +11,7 @@ Once, I realize the subroutine I need to design each sub routine in pseudocode s
 ```
 Conversion
 			if rough value adding into true value 0
-.			If rough value > 20 adding 1 to into rough value save in true value
+			If rough value > 20 adding 1 to into rough value save in true value
 			If rough value > 39 adding 3 to into rough value save in true value
 			If rough value > 59 adding 7 to into rough value save in true value
 If rough value > 79 adding 12 to into rough value save in true value
